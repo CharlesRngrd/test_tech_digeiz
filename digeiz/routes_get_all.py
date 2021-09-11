@@ -19,7 +19,6 @@ def malls_get():
     return make_response(jsonify({'malls': malls}), 200)
 
 
-# FIXME : this may return the account id for each unit
 @get_all.route('/units', methods = ['GET'])
 def units_get():
     units = Unit.query.all()
