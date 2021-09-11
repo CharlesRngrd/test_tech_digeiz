@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+
 from digeiz import db
 
 
@@ -23,7 +24,7 @@ class Mall(db.Model):
     name: str
     creation_date: datetime
     units: list
-    
+
     id = db.Column(db.Integer, primary_key=True)
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
     name = db.Column(db.String(100))
@@ -38,7 +39,7 @@ class Unit(db.Model):
     account_id: int
     name: str
     creation_date: datetime
-    
+
     id = db.Column(db.Integer, primary_key=True)
     mall_id = db.Column(db.Integer, db.ForeignKey('mall.id'))
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
