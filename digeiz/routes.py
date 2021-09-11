@@ -25,7 +25,6 @@ def units_get():
     return jsonify(units)
 
 
-# FIXME : return the account created in response
 # FIXME : return an error if name is too long
 @app.route('/account', methods = ['POST'])
 def account_post():
@@ -35,16 +34,15 @@ def account_post():
     if not data.get('name'):
         return make_response(jsonify({'message': 'Please enter a name'}), 400)
 
-    account = Account(name=data.get('name'))   
+    account = Account(name=data['name'])   
     db.session.add(account)
     db.session.commit()
+    db.session.refresh(account)
 
-    return make_response(jsonify({'message': 'Account created'}), 200)
+    return make_response(jsonify({'message': 'Account created', 'account': account}), 200)
 
 
-# FIXME : return the mall created in response
 # FIXME : return an error if name is too long
-# FIXME : return an error if accound_id does not match an account
 @app.route('/mall', methods = ['POST'])
 def mall_post():
 
@@ -53,16 +51,18 @@ def mall_post():
     if not data.get('name') or not data.get('account_id'):
         return make_response(jsonify({'message': 'Please enter a name and an account ID'}), 400)
 
-    mall = Mall(name=data.get('name'), account_id=data.get('account_id'))   
+    if not db.session.query(Account).get(data['account_id']):
+        return make_response(jsonify({'message': 'Account ID doesn\'t exists'}), 400)
+
+    mall = Mall(name=data['name'], account_id=data['account_id'])   
     db.session.add(mall)
     db.session.commit()
+    db.session.refresh(mall)
 
-    return make_response(jsonify({'message': 'Mall created'}), 200)
+    return make_response(jsonify({'message': 'Mall created', 'mall': mall}), 200)
 
 
-# FIXME : return the unit created in response
 # FIXME : return an error if name is too long
-# FIXME : return an error if mall_id does not match a mall
 @app.route('/unit', methods = ['POST'])
 def unit_post():
 
@@ -71,8 +71,12 @@ def unit_post():
     if not data.get('name') or not data.get('mall_id'):
         return make_response(jsonify({'message': 'Please enter a name and an mall ID'}), 400)
 
-    unit = Unit(name=data.get('name'), mall_id=data.get('mall_id'))   
+    if not db.session.query(Mall).get(data['mall_id']):
+        return make_response(jsonify({'message': 'Mall ID doesn\'t exists'}), 400)
+
+    unit = Unit(name=data['name'], mall_id=data['mall_id'])   
     db.session.add(unit)
     db.session.commit()
+    db.session.refresh(unit)
 
-    return make_response(jsonify({'message': 'Unit created'}), 200)
+    return make_response(jsonify({'message': 'Unit created', 'unit': unit}), 200)
