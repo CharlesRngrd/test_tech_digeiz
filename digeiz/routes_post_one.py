@@ -1,62 +1,13 @@
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, Blueprint, request, jsonify, make_response
 from digeiz.models import Account, Mall, Unit
-from digeiz import app, db
+from digeiz import db
 
 
-@app.route('/accounts', methods = ['GET'])
-def accounts_get():
-    accounts = Account.query.all()
-
-    return jsonify(accounts)
-
-
-@app.route('/malls', methods = ['GET'])
-def malls_get():
-    malls = Mall.query.all()
-
-    return jsonify(malls)
-
-
-# FIXME : this may return the account id for each unit
-@app.route('/units', methods = ['GET'])
-def units_get():
-    units = Unit.query.all()
-
-    return jsonify(units)
-
-
-@app.route('/account/<id>', methods = ['GET'])
-def account_get(id):
-    account = db.session.query(Account).get(id)
-
-    if not account:
-        return make_response(jsonify({'message': 'Account ID doesn\'t exists'}), 400)
-
-    return jsonify(account)
-
-
-@app.route('/mall/<id>', methods = ['GET'])
-def mall_get(id):
-    mall = db.session.query(Mall).get(id)
-
-    if not mall:
-        return make_response(jsonify({'message': 'Mall ID doesn\'t exists'}), 400)
-
-    return jsonify(mall)
-
-
-@app.route('/unit/<id>', methods = ['GET'])
-def unit_get(id):
-    unit = db.session.query(Unit).get(id)
-
-    if not unit:
-        return make_response(jsonify({'message': 'Unit ID doesn\'t exists'}), 400)
-
-    return jsonify(unit)
+post_one = Blueprint('post_one', __name__)
 
 
 # FIXME : return an error if name is too long
-@app.route('/account', methods = ['POST'])
+@post_one.route('/account', methods = ['POST'])
 def account_post():
 
     data = request.get_json()
@@ -73,7 +24,7 @@ def account_post():
 
 
 # FIXME : return an error if name is too long
-@app.route('/mall', methods = ['POST'])
+@post_one.route('/mall', methods = ['POST'])
 def mall_post():
 
     data = request.get_json()
@@ -93,7 +44,7 @@ def mall_post():
 
 
 # FIXME : return an error if name is too long
-@app.route('/unit', methods = ['POST'])
+@post_one.route('/unit', methods = ['POST'])
 def unit_post():
 
     data = request.get_json()

@@ -11,4 +11,11 @@ app.config['SECRET_KEY'] = "random string"
 
 db = SQLAlchemy(app)
 
-from digeiz import routes
+
+from digeiz.routes_get_all import get_all
+from digeiz.routes_get_one import get_one
+from digeiz.routes_post_one import post_one
+
+app.register_blueprint(get_all)
+app.register_blueprint(get_one)
+app.register_blueprint(post_one)
