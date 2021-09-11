@@ -25,6 +25,36 @@ def units_get():
     return jsonify(units)
 
 
+@app.route('/account/<id>', methods = ['GET'])
+def account_get(id):
+    account = db.session.query(Account).get(id)
+
+    if not account:
+        return make_response(jsonify({'message': 'Account ID doesn\'t exists'}), 400)
+
+    return jsonify(account)
+
+
+@app.route('/mall/<id>', methods = ['GET'])
+def mall_get(id):
+    mall = db.session.query(Mall).get(id)
+
+    if not mall:
+        return make_response(jsonify({'message': 'Mall ID doesn\'t exists'}), 400)
+
+    return jsonify(mall)
+
+
+@app.route('/unit/<id>', methods = ['GET'])
+def unit_get(id):
+    unit = db.session.query(Unit).get(id)
+
+    if not unit:
+        return make_response(jsonify({'message': 'Unit ID doesn\'t exists'}), 400)
+
+    return jsonify(unit)
+
+
 # FIXME : return an error if name is too long
 @app.route('/account', methods = ['POST'])
 def account_post():
