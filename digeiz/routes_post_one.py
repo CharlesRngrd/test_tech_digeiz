@@ -52,10 +52,12 @@ def unit_post():
     if not data.get('name') or not data.get('mall_id'):
         return make_response(jsonify({'message': 'Please enter a name and an mall ID'}), 400)
 
-    if not db.session.query(Mall).get(data['mall_id']):
+    mall = db.session.query(Mall).get(data['mall_id'])
+    if not mall:
         return make_response(jsonify({'message': 'Mall ID doesn\'t exists'}), 400)
 
-    unit = Unit(name=data['name'], mall_id=data['mall_id'])   
+    account_id = mall.account_id
+    unit = Unit(name=data['name'], mall_id=data['mall_id'], account_id=account_id)   
     db.session.add(unit)
     db.session.commit()
     db.session.refresh(unit)

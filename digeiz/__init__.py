@@ -15,7 +15,9 @@ db = SQLAlchemy(app)
 from digeiz.routes_get_all import get_all
 from digeiz.routes_get_one import get_one
 from digeiz.routes_post_one import post_one
+from digeiz.routes_drop_one import drop_one
 
 app.register_blueprint(get_all)
 app.register_blueprint(get_one)
 app.register_blueprint(post_one)
+app.register_blueprint(drop_one)

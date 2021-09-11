@@ -35,10 +35,12 @@ class Mall(db.Model):
 class Unit(db.Model):
     id: int
     mall_id: int
+    account_id: int
     name: str
     creation_date: datetime
     
     id = db.Column(db.Integer, primary_key=True)
     mall_id = db.Column(db.Integer, db.ForeignKey('mall.id'))
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
     name = db.Column(db.String(100))
     creation_date = db.Column(db.DateTime, default=datetime.now)

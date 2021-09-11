@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, jsonify
+from flask import Flask, Blueprint, jsonify, make_response
 from digeiz.models import Account, Mall, Unit
 
 
@@ -9,14 +9,14 @@ get_all = Blueprint('get_all', __name__)
 def accounts_get():
     accounts = Account.query.all()
 
-    return jsonify(accounts)
+    return make_response(jsonify({'accounts': accounts}), 200)
 
 
 @get_all.route('/malls', methods = ['GET'])
 def malls_get():
     malls = Mall.query.all()
 
-    return jsonify(malls)
+    return make_response(jsonify({'malls': malls}), 200)
 
 
 # FIXME : this may return the account id for each unit
@@ -24,4 +24,4 @@ def malls_get():
 def units_get():
     units = Unit.query.all()
 
-    return jsonify(units)
+    return make_response(jsonify({'units': units}), 200)

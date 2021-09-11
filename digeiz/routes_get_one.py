@@ -13,7 +13,7 @@ def account_get(id):
     if not account:
         return make_response(jsonify({'message': 'Account ID doesn\'t exists'}), 400)
 
-    return jsonify(account)
+    return make_response(jsonify({'account': account}), 200)
 
 
 @get_one.route('/mall/<id>', methods = ['GET'])
@@ -23,7 +23,7 @@ def mall_get(id):
     if not mall:
         return make_response(jsonify({'message': 'Mall ID doesn\'t exists'}), 400)
 
-    return jsonify(mall)
+    return make_response(jsonify({'mall': mall}), 200)
 
 
 @get_one.route('/unit/<id>', methods = ['GET'])
@@ -33,4 +33,4 @@ def unit_get(id):
     if not unit:
         return make_response(jsonify({'message': 'Unit ID doesn\'t exists'}), 400)
 
-    return jsonify(unit)
+    return make_response(jsonify({'unit': unit}), 200)
