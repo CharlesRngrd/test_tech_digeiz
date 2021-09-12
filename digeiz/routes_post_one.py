@@ -55,7 +55,7 @@ def unit_post():
 
     if not data.get('name') or not data.get('mall_id'):
         return make_response(jsonify(
-            {'message': 'Please enter a name and an mall ID'}), 400)
+            {'message': 'Please enter a name and a mall ID'}), 400)
 
     mall = db.session.query(Mall).get(data['mall_id'])
     if not mall:
