@@ -17,6 +17,10 @@ class PostOneTest(unittest.TestCase):
             db.drop_all()
             db.create_all()
 
+    # ===========================================================
+    # ACCOUNT
+    # ===========================================================
+
     def test_initial_accounts(self):
         """
         It should return an empty list when there is no account
@@ -61,6 +65,10 @@ class PostOneTest(unittest.TestCase):
 
         assert response.status_code == 200
         assert data['account']['id'] == 2
+
+    # ===========================================================
+    # MALL
+    # ===========================================================
 
     def test_post_mall_error(self):
         """
@@ -121,6 +129,10 @@ class PostOneTest(unittest.TestCase):
         assert response.status_code == 200
         assert data['malls'][0]['id'] == 1
         assert data['malls'][1]['id'] == 2
+
+    # ===========================================================
+    # UNIT
+    # ===========================================================
 
     def test_post_unit_error(self):
         """
