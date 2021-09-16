@@ -125,6 +125,58 @@ class PostOneTest(unittest.TestCase):
         assert response.status_code == 400
         assert data['message'] == 'Account ID doesn\'t exists'
 
+    def test_rename_account(self):
+        """
+        It should return an error if the account doesn't exists
+        It should return an error if no name is provided
+        It should rename the account if exists
+        """
+
+        response = app.test_client().put('/account/1', data=json.dumps(
+            {"name": "toto"}), content_type='application/json')
+        data = json.loads(response.data)
+
+        assert response.status_code == 400
+        assert data['message'] == 'Account ID doesn\'t exists'
+
+        db.session.add(Account(name='my_account'))
+        db.session.commit()
+
+        response = app.test_client().put('/account/1', data=json.dumps(
+            {}), content_type='application/json')
+        data = json.loads(response.data)
+
+        assert response.status_code == 400
+        assert data['message'] == 'Please enter a name'
+
+        response = app.test_client().put('/account/1', data=json.dumps(
+            {"name": "toto"}), content_type='application/json')
+        data = json.loads(response.data)
+
+        assert response.status_code == 200
+        assert data['account']['name'] == 'toto'
+
+    def test_get_one_account(self):
+        """
+        It should return an error if the account doesn't exists
+        It should return the account if exists
+        """
+
+        response = app.test_client().get('/account/1')
+        data = json.loads(response.data)
+
+        assert response.status_code == 400
+        assert data['message'] == 'Account ID doesn\'t exists'
+
+        db.session.add(Account(name='my_account'))
+        db.session.commit()
+
+        response = app.test_client().get('/account/1')
+        data = json.loads(response.data)
+
+        assert response.status_code == 200
+        assert data['account']['id'] == 1
+
     # ===========================================================
     # MALL
     # ===========================================================
@@ -239,6 +291,60 @@ class PostOneTest(unittest.TestCase):
         assert response.status_code == 400
         assert data['message'] == 'Mall ID doesn\'t exists'
 
+    def test_rename_mall(self):
+        """
+        It should return an error if the mall doesn't exists
+        It should return an error if no name is provided
+        It should rename the mall if exists
+        """
+
+        response = app.test_client().put('/mall/1', data=json.dumps(
+            {"name": "toto"}), content_type='application/json')
+        data = json.loads(response.data)
+
+        assert response.status_code == 400
+        assert data['message'] == 'Mall ID doesn\'t exists'
+
+        db.session.add(Account(name='my_account'))
+        db.session.add(Mall(name='my_mall', account_id=1))
+        db.session.commit()
+
+        response = app.test_client().put('/mall/1', data=json.dumps(
+            {}), content_type='application/json')
+        data = json.loads(response.data)
+
+        assert response.status_code == 400
+        assert data['message'] == 'Please enter a name'
+
+        response = app.test_client().put('/mall/1', data=json.dumps(
+            {"name": "toto"}), content_type='application/json')
+        data = json.loads(response.data)
+
+        assert response.status_code == 200
+        assert data['mall']['name'] == 'toto'
+
+    def test_get_one_mall(self):
+        """
+        It should return an error if the mall doesn't exists
+        It should return the mall if exists
+        """
+
+        response = app.test_client().get('/mall/1')
+        data = json.loads(response.data)
+
+        assert response.status_code == 400
+        assert data['message'] == 'Mall ID doesn\'t exists'
+
+        db.session.add(Account(name='my_account'))
+        db.session.add(Mall(name='my_mall', account_id=1))
+        db.session.commit()
+
+        response = app.test_client().get('/mall/1')
+        data = json.loads(response.data)
+
+        assert response.status_code == 200
+        assert data['mall']['id'] == 1
+
     # ===========================================================
     # UNIT
     # ===========================================================
@@ -349,6 +455,62 @@ class PostOneTest(unittest.TestCase):
         assert response.status_code == 400
         assert data['message'] == 'Unit ID doesn\'t exists'
 
+    def test_rename_unit(self):
+        """
+        It should return an error if the unit doesn't exists
+        It should return an error if no name is provided
+        It should rename the unit if exists
+        """
+
+        response = app.test_client().put('/unit/1', data=json.dumps(
+            {"name": "toto"}), content_type='application/json')
+        data = json.loads(response.data)
+
+        assert response.status_code == 400
+        assert data['message'] == 'Unit ID doesn\'t exists'
+
+        db.session.add(Account(name='my_account'))
+        db.session.add(Mall(name='my_mall', account_id=1))
+        db.session.add(Unit(name='my_unit', mall_id=1, account_id=1))
+        db.session.commit()
+
+        response = app.test_client().put('/unit/1', data=json.dumps(
+            {}), content_type='application/json')
+        data = json.loads(response.data)
+
+        assert response.status_code == 400
+        assert data['message'] == 'Please enter a name'
+
+        response = app.test_client().put('/unit/1', data=json.dumps(
+            {"name": "toto"}), content_type='application/json')
+        data = json.loads(response.data)
+
+        assert response.status_code == 200
+        assert data['unit']['name'] == 'toto'
+
+    def test_get_one_unit(self):
+        """
+        It should return an error if the unit doesn't exists
+        It should return the unit if exists
+        """
+
+        response = app.test_client().get('/unit/1')
+        data = json.loads(response.data)
+
+        assert response.status_code == 400
+        assert data['message'] == 'Unit ID doesn\'t exists'
+
+        db.session.add(Account(name='my_account'))
+        db.session.add(Mall(name='my_mall', account_id=1))
+        db.session.add(Unit(name='my_unit', mall_id=1, account_id=1))
+        db.session.commit()
+
+        response = app.test_client().get('/unit/1')
+        data = json.loads(response.data)
+
+        assert response.status_code == 200
+        assert data['unit']['id'] == 1
+
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main()  # pragma: no cover
