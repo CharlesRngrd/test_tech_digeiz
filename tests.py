@@ -75,6 +75,56 @@ class PostOneTest(unittest.TestCase):
         assert response.status_code == 200
         assert data['account']['id'] == 2
 
+    def test_delete_account(self):
+        """
+        It should delete the account
+        It should delete the nested malls
+        It should delete the nested units
+        """
+
+        db.session.add(Account(name='my_account'))
+        db.session.add(Account(name='my_account'))
+        db.session.add(Mall(name='my_mall', account_id=1))
+        db.session.add(Unit(name='my_unit', mall_id=1, account_id=1))
+        db.session.commit()
+
+        response = app.test_client().delete('/account/1')
+        data = json.loads(response.data)
+
+        assert response.status_code == 200
+        assert data['message'] == 'Account deleted'
+
+        response = app.test_client().get('/accounts')
+        data = json.loads(response.data)
+
+        assert response.status_code == 200
+        assert data['accounts'][0]['id'] == 2
+
+        response = app.test_client().get('/malls')
+        data = json.loads(response.data)
+
+        assert response.status_code == 200
+        assert data['malls'] == []
+
+        response = app.test_client().get('/units')
+        data = json.loads(response.data)
+
+        print(data)
+
+        assert response.status_code == 200
+        assert data['units'] == []
+
+    def test_delete_account_errors(self):
+        """
+        It should return an error if the account doesn't exists
+        """
+
+        response = app.test_client().delete('/account/1')
+        data = json.loads(response.data)
+
+        assert response.status_code == 400
+        assert data['message'] == 'Account ID doesn\'t exists'
+
     # ===========================================================
     # MALL
     # ===========================================================
@@ -148,6 +198,47 @@ class PostOneTest(unittest.TestCase):
         assert data['malls'][0]['id'] == 1
         assert data['malls'][1]['id'] == 2
 
+    def test_delete_mall(self):
+        """
+        It should delete the mall
+        It should delete the nested units
+        """
+
+        db.session.add(Account(name='my_account'))
+        db.session.add(Mall(name='my_mall', account_id=1))
+        db.session.add(Mall(name='my_mall', account_id=1))
+        db.session.add(Unit(name='my_unit', mall_id=1, account_id=1))
+        db.session.commit()
+
+        response = app.test_client().delete('/mall/1')
+        data = json.loads(response.data)
+
+        assert response.status_code == 200
+        assert data['message'] == 'Mall deleted'
+
+        response = app.test_client().get('/malls')
+        data = json.loads(response.data)
+
+        assert response.status_code == 200
+        assert data['malls'][0]['id'] == 2
+
+        response = app.test_client().get('/units')
+        data = json.loads(response.data)
+
+        assert response.status_code == 200
+        assert data['units'] == []
+
+    def test_delete_mall_errors(self):
+        """
+        It should return an error if the mall doesn't exists
+        """
+
+        response = app.test_client().delete('/mall/1')
+        data = json.loads(response.data)
+
+        assert response.status_code == 400
+        assert data['message'] == 'Mall ID doesn\'t exists'
+
     # ===========================================================
     # UNIT
     # ===========================================================
@@ -206,7 +297,7 @@ class PostOneTest(unittest.TestCase):
 
         db.session.add(Account(name='my_account'))
         db.session.add(Mall(name='my_mall', account_id=1))
-        db.session.add(Unit(name='my_unit', mall_id=1))
+        db.session.add(Unit(name='my_unit', mall_id=1, account_id=1))
         db.session.commit()
 
         response = app.test_client().post(
@@ -223,6 +314,40 @@ class PostOneTest(unittest.TestCase):
         assert data['units'][0]['id'] == 1
         assert data['units'][1]['id'] == 2
         assert data['units'][1]['account_id'] == 1
+
+    def test_delete_unit(self):
+        """
+        It should delete the unit
+        """
+
+        db.session.add(Account(name='my_account'))
+        db.session.add(Mall(name='my_mall', account_id=1))
+        db.session.add(Unit(name='my_unit', mall_id=1, account_id=1))
+        db.session.add(Unit(name='my_unit', mall_id=1, account_id=1))
+        db.session.commit()
+
+        response = app.test_client().delete('/unit/1')
+        data = json.loads(response.data)
+
+        assert response.status_code == 200
+        assert data['message'] == 'Unit deleted'
+
+        response = app.test_client().get('/units')
+        data = json.loads(response.data)
+
+        assert response.status_code == 200
+        assert data['units'][0]['id'] == 2
+
+    def test_delete_unit_errors(self):
+        """
+        It should return an error if the unit doesn't exists
+        """
+
+        response = app.test_client().delete('/unit/1')
+        data = json.loads(response.data)
+
+        assert response.status_code == 400
+        assert data['message'] == 'Unit ID doesn\'t exists'
 
 
 if __name__ == '__main__':
