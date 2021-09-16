@@ -2,6 +2,7 @@ import json
 import unittest
 
 from digeiz import app, db
+from digeiz.models import Account, Mall, Unit
 
 
 class PostOneTest(unittest.TestCase):
@@ -16,6 +17,10 @@ class PostOneTest(unittest.TestCase):
         with cls.app.app_context():
             db.drop_all()
             db.create_all()
+
+    def setUp(self):
+        db.drop_all()
+        db.create_all()
 
     # ===========================================================
     # ACCOUNT
@@ -59,6 +64,10 @@ class PostOneTest(unittest.TestCase):
         """
         It should increment the account id when an account is created
         """
+
+        db.session.add(Account(name='my_account'))
+        db.session.commit()
+
         response = app.test_client().post('/account', data=json.dumps(
             {"name": "my_account"}), content_type='application/json')
         data = json.loads(response.data)
@@ -85,7 +94,7 @@ class PostOneTest(unittest.TestCase):
 
         response = app.test_client().post(
             '/mall',
-            data=json.dumps({"name": "my_mall", "account_id": 3}),
+            data=json.dumps({"name": "my_mall", "account_id": 1}),
             content_type='application/json'
         )
         data = json.loads(response.data)
@@ -98,6 +107,10 @@ class PostOneTest(unittest.TestCase):
         It should return the mall nested in the account list when a mall is
         created
         """
+
+        db.session.add(Account(name='my_account'))
+        db.session.commit()
+
         response = app.test_client().post(
             '/mall',
             data=json.dumps({"name": "my_mall", "account_id": 1}),
@@ -116,6 +129,11 @@ class PostOneTest(unittest.TestCase):
         """
         It should increment the mall id when an account is created
         """
+
+        db.session.add(Account(name='my_account'))
+        db.session.add(Mall(name='my_mall'))
+        db.session.commit()
+
         response = app.test_client().post(
             '/mall',
             data=json.dumps({"name": "my_mall", "account_id": 1}),
@@ -149,7 +167,7 @@ class PostOneTest(unittest.TestCase):
 
         response = app.test_client().post(
             '/unit',
-            data=json.dumps({"name": "my_unit", "mall_id": 3}),
+            data=json.dumps({"name": "my_unit", "mall_id": 1}),
             content_type='application/json'
         )
         data = json.loads(response.data)
@@ -162,6 +180,11 @@ class PostOneTest(unittest.TestCase):
         It should return the unit nested in the account list when a unit is
         created
         """
+
+        db.session.add(Account(name='my_account'))
+        db.session.add(Mall(name='my_mall', account_id=1))
+        db.session.commit()
+
         response = app.test_client().post(
             '/unit',
             data=json.dumps({"name": "my_unit", "mall_id": 1}),
@@ -180,6 +203,12 @@ class PostOneTest(unittest.TestCase):
         It should increment the unit id when a unit is created
         It should return the accout id when a unit is created
         """
+
+        db.session.add(Account(name='my_account'))
+        db.session.add(Mall(name='my_mall', account_id=1))
+        db.session.add(Unit(name='my_unit', mall_id=1))
+        db.session.commit()
+
         response = app.test_client().post(
             '/unit',
             data=json.dumps({"name": "my_unit", "mall_id": 1}),
